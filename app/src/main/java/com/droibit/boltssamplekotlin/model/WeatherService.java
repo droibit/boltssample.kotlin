@@ -13,4 +13,7 @@ public interface WeatherService {
 
     @GET("/forecast/webservice/json/v1")
     Weather weather(@Query("city") @NonNull Integer city);
+
+    @GET("/forecast/webservice/json/v1")
+    void weatherWithCallback(@Query("city") @NonNull Integer city, Callback<Weather> callback);
 }

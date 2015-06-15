@@ -9,8 +9,12 @@ import android.view.View
 import android.widget.Toast
 import bolts.Continuation
 import bolts.Task
+import com.droibit.boltssamplekotlin.model.Weather
 import com.droibit.boltssamplekotlin.model.WeatherService
+import retrofit.Callback
 import retrofit.RestAdapter
+import retrofit.RetrofitError
+import retrofit.client.Response
 import java.util.*
 import java.util.concurrent.Executor
 
@@ -126,27 +130,26 @@ public class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getAllWeatherAsync(): Task<List<String>> {
-        return Task.whenAllResult(arrayListOf(
-                    getWeatherAsync(400040),
-                    getWeatherAsync(130010),
-                    getWeatherAsync(280010)
-                )
+    private fun getAllWeatherAsync() = Task.whenAllResult(
+            arrayListOf(
+                getWeatherAsync(400040),
+                getWeatherAsync(130010),
+                getWeatherAsync(280010)
         )
-    }
+    )
 
-    private fun getAnyWeatherAsync(): Task<Task<String>> {
-        return Task.whenAnyResult(arrayListOf(
+    private fun getAnyWeatherAsync() = Task.whenAnyResult(
+            arrayListOf(
                 getWeatherAsync(400040),
                 getWeatherAsync(130010),
                 getWeatherAsync(280010)
             )
-        )
-    }
+    )
 
-    private fun getWeatherAsync(city: Int): Task<String> = Task.callInBackground {
+    private fun getWeatherAsync(city: Int) = Task.callInBackground {
         mWeatherService.weather(city).toString()
     }
+
 
     private fun showResult(weathers: List<String>) {
         runOnUiThread {
