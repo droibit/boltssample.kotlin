@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.Toast
 import bolts.Continuation
 import bolts.Task
+import com.droibit.boltssamplekotlin.Tasks
 import com.droibit.boltssamplekotlin.model.Weather
 import com.droibit.boltssamplekotlin.model.WeatherService
 import retrofit.Callback
@@ -60,6 +61,17 @@ public class MainActivity : AppCompatActivity() {
         getWeatherAsync(400040).continueWithTask {
             weathers.add(it.getResult())
             getWeatherAsync(130010)
+        } continueWith {
+            weathers.add(it.getResult())
+            showResult(weathers)
+        }
+    }
+
+    fun onContinueWithTaskWithCallback(v: View) {
+        val weathers = ArrayList<String>()
+        getWeatherAsyncWithCallback(400040).continueWithTask {
+            weathers.add(it.getResult())
+            getWeatherAsyncWithCallback(130010)
         } continueWith {
             weathers.add(it.getResult())
             showResult(weathers)
@@ -151,9 +163,15 @@ public class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun showResult(weathers: List<String>) {
-        runOnUiThread {
-            Toast.makeText(this, weathers.join("\n"), Toast.LENGTH_LONG).show()
-        }
+    private fun getWeatherAsyncWithCallback(city: Int) = Tasks.createTask<String> {
+        mWeatherService.weatherWithCallback(city, object: Callback<Weather> {
+            override fun success(weather: Weather, response: Response) = it.setResult(weather.toString())
+
+            override fun failure(error: RetrofitError) = it.setError(error)
+        })
+    }
+
+    private fun showResult(weathers: List<String>) = runOnUiThread {
+        Toast.makeText(this, weathers.join("\n"), Toast.LENGTH_LONG).show()
     }
 }

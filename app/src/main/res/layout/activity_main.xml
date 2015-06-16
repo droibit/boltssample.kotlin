@@ -16,6 +16,12 @@
         android:onClick="onContinueWithTask" />
 
     <Button
+        android:text="Continue With Task With Callback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onContinueWithTaskWithCallback" />
+
+    <Button
         android:text="On Success Task"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
